@@ -1,5 +1,5 @@
 <?php
-session_start();
+session_start(['use_strict_mode'=>true, 'cookie_httponly'=>true, 'cookie_samesite'=>'Lax', 'cookie_secure'=>!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS']!=='off']);
 $_SESSION += ['submission'=>'post','show_query'=>false,'show_errors'=>false];
 function h($value): string { return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8'); }
 function db(): PDO {

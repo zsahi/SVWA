@@ -21,7 +21,7 @@ docker compose up -d --build
 docker compose ps
 ```
 
-The first run downloads the base images, builds the application, and creates the sample database. Open **http://localhost:8888** after the services start. No account or login is needed. Internet access is needed for the initial image downloads; the running interface uses local assets.
+The first run downloads the base images, builds the application, and creates the sample databases. Open **http://localhost:8888** after the services start. Existing labs remain public; the Student Result IDOR lab requires login. Use `admin / password`, `user1 / password1`, or `user2 / password2`. Internet access is needed for the initial image downloads; the running interface uses local assets.
 
 Keep this intentionally vulnerable application local. The supplied configuration only exposes it on your computer's loopback address.
 
@@ -62,6 +62,8 @@ docker compose up -d
 
 Session settings return to defaults when the web container is recreated. The database initialization script runs only when the database volume is empty.
 
+Fresh setup/reset seeds exactly three accounts and two student results. Reset restores seed passwords and removes registered accounts, profile changes, and reset tokens.
+
 ## 5. Rebuild after source changes
 
 ```sh
@@ -69,6 +71,24 @@ docker compose up -d --build
 ```
 
 Source files are copied into the image, so editing PHP or CSS requires a rebuild. Existing database records and uploads remain.
+
+When upgrading a database created before authentication was added, run this additive migration after rebuilding:
+
+```sh
+docker compose exec -T db sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -uroot < /docker-entrypoint-initdb.d/accounts.sql'
+```
+
+It is safe to repeat: existing accounts/results are retained without duplicates. It does not reset passwords. Both `database/init.sql` and `database/accounts.sql` must accompany Compose.
+
+## Local password reset
+
+Open http://localhost:8888/forgot_password.php and submit the account email. Seed emails are `admin@example.test`, `user1@example.test`, and `user2@example.test`. Reset delivery uses an operator-only local outbox instead of SMTP:
+
+```sh
+docker compose exec web cat /var/lib/svwa-reset/outbox.log
+```
+
+Find the newest entry for the requested email. Append its `path` to `http://localhost:8888` and open the resulting URL. Choose a new password (8–72 bytes). Links expire in 15 minutes and work once; requesting another link invalidates the previous link. Resetting invalidates existing login sessions. HTTP responses never reveal reset tokens, and the outbox is outside the web root. The outbox is discarded when the web container is recreated.
 
 ## 6. Status and logs
 

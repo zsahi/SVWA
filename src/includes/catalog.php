@@ -1,5 +1,6 @@
 <?php
 return [
+ 'Broken Access Control'=>[['student-result','Broken Access Control – Student Result IDOR','Explore a university result portal. Login required.']],
  'SQL Injection'=>[
   ['numeric','Numeric lookup','Find a product by its ID.'],
   ['union','Product search','Search the product catalog.'],

@@ -10,6 +10,9 @@ services:
       DB_NAME: svwa
       DB_USER: svwa
       DB_PASSWORD: svwa_lab
+      ACCOUNT_DB_NAME: svwa_accounts
+      ACCOUNT_DB_USER: svwa_accounts
+      ACCOUNT_DB_PASSWORD: svwa_accounts_local
     depends_on:
       db:
         condition: service_healthy
@@ -26,6 +29,7 @@ services:
     volumes:
       - database:/var/lib/mysql
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./database/accounts.sql:/docker-entrypoint-initdb.d/accounts.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "MYSQL_PWD=$$MYSQL_PASSWORD mysql -h 127.0.0.1 -u $$MYSQL_USER $$MYSQL_DATABASE -e 'SELECT 1' >/dev/null 2>&1"]
       interval: 5s
