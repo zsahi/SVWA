@@ -21,6 +21,8 @@ services:
     restart: unless-stopped
   db:
     image: mysql:8.0.46
+    ports:
+      - "127.0.0.1:13306:3306"
     environment:
       MYSQL_DATABASE: svwa
       MYSQL_USER: svwa

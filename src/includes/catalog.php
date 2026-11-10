@@ -3,8 +3,8 @@ return [
  'SSRF'=>[['ssrf','Stock checker','Check warehouse stock through a server-side request.']],
  'Broken Access Control'=>[['student-result','Broken Access Control – Student Result IDOR','Explore a university result portal. Login required.']],
  'SQL Injection'=>[
-  ['numeric','Numeric lookup','Find a product by its ID.'],
   ['union','Product search','Search the product catalog.'],
+  ['numeric','Numeric lookup','Find a product by its ID.'],
   ['boolean','Availability check','Check whether a product is available.'],
   ['time','Stock notification','Request a stock notification.'],
   ['order','Product sorting','Choose how products are ordered.']],
