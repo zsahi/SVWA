@@ -1,6 +1,6 @@
 # SAHI Vulnerable WebApp (SVWA)
 
-16 focused exercises in SQL injection, reflected XSS, DOM XSS, stored XSS, file uploads, and broken access control. Shared files handle layout, request parsing, database connections, and account authorization.
+17 focused exercises in SQL injection, reflected XSS, DOM XSS, stored XSS, file uploads, SSRF, and broken access control. Shared files handle layout, request parsing, database connections, and account authorization.
 
 See [DOCKER-GUIDE.md](DOCKER-GUIDE.md) for student setup and Docker commands.
 
@@ -52,3 +52,11 @@ Settings select GET, URL-encoded POST, JSON POST, or multipart POST for SQL, ref
 Run verification with `python tests/smoke.py`. The checks add test guestbook messages and uploaded marker files. Use the guide's reset commands to return to the initial state.
 
 Run `python tests/auth.py` for account/IDOR HTTP checks (requires the normal Compose stack). It reapplies the migration twice, exercises all seeded logins, directory permissions, profile tampering, registration, logout and password reset. It restores user1's seeded name/email and deletes its temporary registered account. Run `python tests/reset.py` for two fresh setup/reset cycles in a temporary, isolated Compose project on port 18888; its volumes are removed afterwards.
+
+## SSRF stock checker
+
+Open http://localhost:8888/labs/ssrf.php after rebuilding with `docker compose up -d --build`. No database migration is needed for this lab. Click **Check stock**, intercept the JavaScript POST request in Burp, then change `stockApi` to `http://127.0.0.1/internal/admin.php` to retrieve a fictional training flag through the server. Direct browser access to `/internal/admin.php` returns 403 with the supplied Docker setup. A separate explanation page covers the missing destination restriction and remediation.
+
+The internal fixtures use the actual connection address, not forwarding headers. Run this exercise with the supplied Apache/Docker setup: a host-native server or loopback reverse proxy changes the trust boundary, and a single-worker PHP development server cannot service a request back to itself. HTTP/HTTPS fetches have a three-second read timeout and 64 KiB response cap; redirects are disabled. The product page sends `stockApi` through a JavaScript URL-encoded POST, independently of Settings; there is no visible URL input. All services run in the same web instance.
+
+Run `python tests/ssrf.py` for SSRF checks (normal stock response, internal access, all request formats, invalid input, failed connections, and plain-text output).

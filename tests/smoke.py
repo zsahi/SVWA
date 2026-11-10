@@ -31,7 +31,7 @@ def upload(slug, filename, mime, payload):
 
 home = request('/')
 links = set(re.findall(r'href="(/labs/[^\"]+)"', home))
-check(len(links) == 16, '16 distinct lab URLs')
+check(len(links) == 17, '17 distinct lab URLs')
 for path in sorted(links):
     check('Fatal error' not in request(path), path)
 check('Canvas Backpack' in get('numeric', id='1'), 'numeric baseline')

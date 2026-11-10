@@ -1,5 +1,6 @@
 <?php
 return [
+ 'SSRF'=>[['ssrf','Stock checker','Check warehouse stock through a server-side request.']],
  'Broken Access Control'=>[['student-result','Broken Access Control – Student Result IDOR','Explore a university result portal. Login required.']],
  'SQL Injection'=>[
   ['numeric','Numeric lookup','Find a product by its ID.'],
