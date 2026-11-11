@@ -37,7 +37,7 @@ The initial portal shows only the learner objective and the signed-in student's 
 
 This intentionally vulnerable application is for local practice. The default configuration binds the website to localhost and does not publish MySQL's port.
 
-Settings select GET, URL-encoded POST, JSON POST, or multipart POST for SQL, reflected XSS, and stored XSS. DOM exercises use browser URL input. Upload exercises always use multipart. SQL query and database error displays are off by default so blind exercises retain their intended behavior.
+The shared header?s **Submission Type** dropdown selects GET, URL-encoded POST, JSON POST, or multipart POST for SQL, reflected XSS, and stored XSS. It saves automatically and updates the current form without clearing input. The Settings page is retained for future options. DOM exercises use browser URL input. Upload exercises always use multipart. The top-right header on SQL Injection lab pages contains **Display SQL queries** and **Display database errors** toggles. Changes save automatically for the current session and apply to the next lab request without resubmitting the current page. Both displays are off by default so blind exercises retain their intended behavior.
 
 ## Files
 
