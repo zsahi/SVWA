@@ -1,5 +1,6 @@
 <?php
 return [
+ 'XXE'=>[['xxe','XML order preview','Preview an order submitted as XML.']],
  'SSRF'=>[['ssrf','Stock checker','Check warehouse stock through a server-side request.']],
  'Broken Access Control'=>[['student-result','Broken Access Control – Student Result IDOR','Explore a university result portal. Login required.']],
  'SQL Injection'=>[

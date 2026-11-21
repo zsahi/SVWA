@@ -1,6 +1,6 @@
 # SAHI Vulnerable WebApp (SVWA)
 
-17 focused exercises in SQL injection, reflected XSS, DOM XSS, stored XSS, file uploads, SSRF, and broken access control. Shared files handle layout, request parsing, database connections, and account authorization.
+18 focused exercises in SQL injection, reflected XSS, DOM XSS, stored XSS, file uploads, SSRF, XXE, and broken access control. Shared files handle layout, request parsing, database connections, and account authorization.
 
 See [DOCKER-GUIDE.md](DOCKER-GUIDE.md) for student setup and Docker commands.
 
@@ -60,3 +60,11 @@ Open http://localhost:8888/labs/ssrf.php after rebuilding with `docker compose u
 The internal fixtures use the actual connection address, not forwarding headers. Run this exercise with the supplied Apache/Docker setup: a host-native server or loopback reverse proxy changes the trust boundary, and a single-worker PHP development server cannot service a request back to itself. HTTP/HTTPS fetches have a three-second read timeout and 64 KiB response cap; redirects are disabled. The product page sends `stockApi` through a JavaScript URL-encoded POST, independently of Settings; there is no visible URL input. All services run in the same web instance.
 
 Run `python tests/ssrf.py` for SSRF checks (normal stock response, internal access, all request formats, invalid input, failed connections, and plain-text output).
+
+## XXE XML order preview
+
+Rebuild with `docker compose up -d --build`, then open http://localhost:8888/labs/xxe.php. No database migration is needed. Submit a normal order, then use the linked explanation page's XML payloads to demonstrate reading `file:///etc/passwd` and requesting `http://127.0.0.1/internal/admin.php` through an external entity. The Linux filename is `/etc/passwd`, not `/etc/password`; the file belongs to the web container.
+
+The editor sends a raw `application/xml` POST, independently of the Submission Type setting, ready to intercept in Burp Repeater. The deliberately unsafe DOM parser expands external entities using file/HTTP/HTTPS resources. Direct access to the internal admin fixture returns 403, while the XXE request reveals its fictional training flag. Use the supplied Apache stack, not a single-worker development server. Inputs and individual external resources are capped at 64 KiB; HTTP reads have a three-second timeout and redirects are disabled. These limits do not prevent XXE.
+
+Run `python tests/xxe.py` for actual file-read and SSRF checks, baseline XML, invalid requests, missing resources, and plain-text output.
