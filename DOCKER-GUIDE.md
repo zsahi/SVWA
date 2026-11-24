@@ -64,13 +64,31 @@ Session settings return to defaults when the web container is recreated. The dat
 
 Fresh setup/reset seeds exactly three accounts and two student results. Reset restores seed passwords and removes registered accounts, profile changes, and reset tokens.
 
-## 5. Rebuild after source changes
+## 5. Live editing during demos
+
+The included `compose.override.yaml` is loaded automatically by Docker Compose. It mounts your local `src` folder into Apache and disables PHP OPcache for development. Activate it once:
+
+```sh
+docker compose up -d web
+```
+
+Edit and save any PHP, CSS, JavaScript, or HTML file under `src`, then refresh the browser. No rebuild or restart is needed. For cached CSS/JavaScript, use Ctrl+F5 or enable Disable cache in browser developer tools while they are open. This does not automatically reload the browser.
+
+The source mount is read-only inside the container; edit files on your host. The existing writable uploads volume and database volume remain in use. Files under `src/uploads` are hidden by the uploads volume.
+
+Dockerfile, installed extensions, and image configuration changes still require a rebuild:
 
 ```sh
 docker compose up -d --build
 ```
 
-Source files are copied into the image, so editing PHP or CSS requires a rebuild. Existing database records and uploads remain.
+To run only the source snapshot copied into the image, without the live-edit override:
+
+```sh
+docker compose -f compose.yaml up -d --build web
+```
+
+Run `docker compose up -d web` to return to live editing. Existing database records and uploads remain.
 
 When upgrading a database created before authentication was added, run this additive migration after rebuilding:
 

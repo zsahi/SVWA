@@ -1,0 +1,6 @@
+# Local demo/development: Compose loads this file automatically.
+services:
+  web:
+    volumes:
+      - ./src:/var/www/html:ro
+      - ./docker/development.ini:/usr/local/etc/php/conf.d/zz-development.ini:ro

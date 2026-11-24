@@ -41,6 +41,29 @@ The shared header?s **Submission Type** dropdown selects GET, URL-encoded POST, 
 
 ## Files
 
+### Classroom XSS report collector
+
+`src/x.js` posts classroom reports to `/b.php`. The collector accepts URL-encoded
+POST fields `origin` and `msg` and returns HTTP 201 with the saved report ID.
+Reports are stored in the SQLite `reports` table (`id`, `received_at` in UTC,
+`origin`, `msg`) at `/var/lib/svwa-reports/reports.sqlite`, outside the web root.
+The Docker `reports` volume preserves these across container recreation; removing
+volumes with `docker compose down -v` also deletes the reports. Rebuild with
+`docker compose up -d --build` after adding these files. For a native PHP setup,
+enable PDO SQLite and set `XSS_DB_PATH` to a writable database path outside the
+web root; its parent directory must already exist.
+
+Use synthetic classroom data: the script collects readable cookies, storage,
+and page HTML. Open `/d.php` for the dashboard (no login required), with newest
+reports first, 25 entries per page, and individual report details. Captured HTML
+is displayed as escaped text, with an optional **Render HTML** panel for the
+`Full DOM` section. The preview uses a sandboxed frame and restrictive CSP to
+block scripts, forms, and external resources; inline styles and embedded data
+images can display. The dashboard uses the
+same database path as `/b.php`. Delete buttons on the list and detail views
+permanently remove individual reports using POST forms with session CSRF tokens;
+no login is required.
+
 - `src/labs/`: individual exercises, with the vulnerable operation visible in each file.
 - `src/includes/`: shared layout, catalog, and helpers.
 - `src/assets/`: local stylesheet and request submission script; no CDN dependencies.
