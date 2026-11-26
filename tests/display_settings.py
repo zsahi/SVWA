@@ -17,6 +17,8 @@ with sync_playwright() as playwright:
     expect(query).not_to_be_checked()
     expect(diagnostics).not_to_be_checked()
     page.locator('#entry').fill('Canvas')
+    # Another local PHP app must not replace SVWA's settings session.
+    context.add_cookies([{'name': 'PHPSESSID', 'value': 'other-local-app-session', 'url': BASE + '/'}])
     query.check()
     expect(query).to_be_enabled()
     expect(page.locator('.display-settings-status')).to_have_text('')
@@ -70,6 +72,17 @@ with sync_playwright() as playwright:
     expect(diagnostics).to_be_visible()
     assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
     page.screenshot(path=str(out / 'svwa-header-mobile.png'))
+    # A stale tab should explain how to recover without bypassing CSRF checks.
+    context.clear_cookies()
+    query.click()
+    expect(query).to_be_enabled()
+    expect(query).not_to_be_checked()
+    expect(page.locator('.display-settings-status')).to_have_text(
+        'Your session changed or expired. Refresh the page and try again.')
+    page.reload()
+    query.check()
+    expect(query).to_be_enabled()
+    expect(page.locator('.display-settings-status')).to_have_text('')
     assert not errors, errors
     browser.close()
     print('PASS: shared header, persistence, query/errors, JSON navigation, preserved input, settings, mobile layout, endpoint validation.')

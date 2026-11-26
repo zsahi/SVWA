@@ -1,5 +1,5 @@
 <?php
-session_start(['use_strict_mode'=>true, 'cookie_httponly'=>true, 'cookie_samesite'=>'Lax', 'cookie_secure'=>!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS']!=='off']);
+require_once __DIR__.'/session.php';
 $_SESSION += ['submission'=>'post','show_query'=>false,'show_errors'=>false];
 $_SESSION['display_settings_token'] ??= bin2hex(random_bytes(24));
 function h($value): string { return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8'); }

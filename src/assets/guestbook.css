@@ -1,0 +1,2 @@
+.comment-actions{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:18px}#comment-editor{margin-top:24px;border-top:1px solid var(--border);padding-top:16px}#comment-status:empty{display:none}#comment-filter input{min-width:0}#comment-resource{overflow-wrap:anywhere}#guestbook-manager [hidden]{display:none}
+#comment-list .comment-actions{justify-content:flex-end}

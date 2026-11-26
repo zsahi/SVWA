@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-session_start();
+require_once __DIR__.'/includes/session.php';
 if (!isset($_SESSION['report_delete_token'])) {
     $_SESSION['report_delete_token'] = bin2hex(random_bytes(32));
 }

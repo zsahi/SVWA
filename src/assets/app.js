@@ -11,13 +11,16 @@ if (displaySettings) {
       const body = new URLSearchParams({token: displaySettings.dataset.token});
       controls.forEach(control => body.set(control.name, control.checked ? '1' : '0'));
       const response = await fetch('/display-settings.php', {method: 'POST', body});
-      if (!response.ok) throw new Error('Save failed');
+      if (!response.ok) throw new Error(response.status === 403
+        ? 'Your session changed or expired. Refresh the page and try again.'
+        : 'Could not save. Please try again.');
       saved = await response.json();
       controls.forEach(control => { control.checked = saved[control.name]; });
       status.textContent = '';
     } catch (error) {
       controls.forEach(control => { control.checked = saved[control.name]; });
-      status.textContent = 'Could not save. Please try again.';
+      status.textContent = error.message === 'Your session changed or expired. Refresh the page and try again.'
+        ? error.message : 'Could not save. Please try again.';
     } finally {
       controls.forEach(control => { control.disabled = false; });
     }
@@ -42,7 +45,9 @@ if (displaySettings) {
           method: 'POST',
           body: new URLSearchParams({token: settings.dataset.token, submission: select.value})
         });
-        if (!response.ok) throw new Error('Save failed');
+        if (!response.ok) throw new Error(response.status === 403
+        ? 'Your session changed or expired. Refresh the page and try again.'
+        : 'Could not save. Please try again.');
         saved = (await response.json()).submission;
         select.value = saved;
         document.querySelectorAll('form[data-submission]').forEach(form => {
@@ -52,7 +57,8 @@ if (displaySettings) {
         });
       } catch (error) {
         select.value = saved;
-        status.textContent = 'Could not save. Please try again.';
+        status.textContent = error.message === 'Your session changed or expired. Refresh the page and try again.'
+        ? error.message : 'Could not save. Please try again.';
       } finally {
         select.disabled = false;
         buttons.forEach((button, index) => { button.disabled = disabled[index]; });

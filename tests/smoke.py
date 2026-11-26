@@ -31,7 +31,7 @@ def upload(slug, filename, mime, payload):
 
 home = request('/')
 links = set(re.findall(r'href="(/labs/[^\"]+)"', home))
-check(len(links) == 17, '17 distinct lab URLs')
+check(len(links) == 23, '23 distinct lab URLs')
 for path in sorted(links):
     check('Fatal error' not in request(path), path)
 check('Canvas Backpack' in get('numeric', id='1'), 'numeric baseline')
@@ -49,19 +49,13 @@ check('value="x" autofocus onfocus="window.svwa=1"' in get('attribute', name='x"
 check("const name = '';window.svwa=1;//'" in get('javascript', name="';window.svwa=1;//"), 'JavaScript breakout')
 for mode in ['get','post','json','multipart']:
     request('/settings.php', urllib.parse.urlencode({'submission': mode}).encode())
-    check(f'data-submission="{mode}"' in request('/labs/guestbook.php'), 'guestbook setting ' + mode)
+    check('data-comment-create' in request('/labs/guestbook.php'), 'guestbook PUT form with setting ' + mode)
     fields = {'author': 'Smoke test', 'message': '<b>stored-' + mode + '</b>'}
-    if mode == 'get':
-        page = get('guestbook', **fields)
-    elif mode == 'json':
-        page = request('/labs/guestbook.php', json.dumps(fields).encode(), 'application/json')
-    elif mode == 'multipart':
-        boundary = 'SVWATestFields'
-        body = ''.join(f'--{boundary}\r\nContent-Disposition: form-data; name="{key}"\r\n\r\n{value}\r\n' for key,value in fields.items()) + f'--{boundary}--\r\n'
-        page = request('/labs/guestbook.php', body.encode(), 'multipart/form-data; boundary=' + boundary)
-    else:
-        page = request('/labs/guestbook.php', urllib.parse.urlencode(fields).encode())
-    check(fields['message'] in page and fields['message'] in request('/labs/guestbook.php'), 'stored rendering ' + mode)
+    data = urllib.parse.urlencode(fields).encode()
+    response = client.open(urllib.request.Request(BASE + '/labs/guestbook-comments.php', data=data,
+        headers={'Content-Type':'application/x-www-form-urlencoded'}, method='PUT'))
+    check(response.status == 201, 'guestbook PUT creates comment')
+    check(fields['message'] in request('/labs/guestbook.php'), 'stored rendering ' + mode)
 for slug,filename,mime in [('unrestricted','marker.php','application/octet-stream'),('mime','marker.php','image/png'),('extension','marker.phtml','application/octet-stream')]:
     page = upload(slug,filename,mime,'<?php echo "SVWA_UPLOAD_OK"; ?>')
     link = re.search(r'href="(/uploads/[^\"]+)"',page)
