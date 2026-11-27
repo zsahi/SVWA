@@ -1,6 +1,6 @@
 <?php require_once __DIR__.'/auth.php'; $navigationAccount=current_account();
 $navigationCatalog=require __DIR__.'/catalog.php';
-$navigationGroups=['HTTP Basics','Broken Access Control','SQL Injection','Reflected XSS','Stored XSS','DOM XSS','SSRF','File Upload','XXE'];
+$navigationGroups=['Web Development Basics','HTTP Basics','Broken Access Control','SQL Injection','Reflected XSS','Stored XSS','DOM XSS','SSRF','File Upload','XXE'];
 ?>
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title><?=h($title)?> · SVWA</title><link rel="stylesheet" href="/assets/style.css"><script src="/assets/app.js" defer></script></head><body>
 <aside class="sidebar"><a class="brand" href="/"><span class="brand-icon">S</span><span>SVWA<small>SAHI Vulnerable WebApp</small></span></a><div class="nav-caption">WORKSPACE</div><a class="nav-link <?= $category==='Overview'?'active':'' ?>" href="/">Dashboard</a>

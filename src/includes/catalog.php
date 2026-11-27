@@ -1,5 +1,9 @@
 <?php
 return [
+ 'Web Development Basics'=>[
+  ['html-forms','HTML Forms and PHP','Explore form controls and GET, POST, and multipart submissions.'],
+  ['javascript-json','JavaScript and JSON','Use fetch and JSON to manage comments without page reloads.'],
+  ['php-database','PHP and MySQL Queries','Follow form values into SELECT, INSERT, UPDATE, and DELETE.']],
  'HTTP Basics'=>[['trace-request','Trace a Request and Its Response','Trace a GET search in Burp Proxy and edit it in Repeater.'],['guestbook-methods','HTTP Methods','Use real guestbook actions to explore HTTP methods and comment IDs.'],['request-content-types','Request Content Types','Use Submission Type to compare URL-encoded, multipart, and JSON request bodies.'],['url-encoding','URL Encoding','Practice URL encoding in the reflected XSS lab.'],['session-management','Session Management','Follow the SVWASESSID cookie through login, profile editing, and logout.']],
  'XXE'=>[['xxe','XML order preview','Preview an order submitted as XML.']],
  'SSRF'=>[['ssrf','Stock checker','Check warehouse stock through a server-side request.']],
